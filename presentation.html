@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SparkX — UX Audit &amp; Redesign Presentation (10 Pages)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-mesh: radial-gradient(circle at 12% 15%, #fde8e8 0%, transparent 45%),
+                 radial-gradient(circle at 88% 18%, #e0e7ff 0%, transparent 50%),
+                 radial-gradient(circle at 75% 88%, #ede9fe 0%, transparent 50%),
+                 #f8fafc;
+      --surface: rgba(255, 255, 255, 0.92);
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --primary-text: #1d4ed8;
+      --emerald: #059669;
+      --emerald-soft: #d1fae5;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --rose: #e11d48;
+      --rose-soft: #ffe4e6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .deck-controls {
+      width: min(1180px, 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .ctrl-btns { display: flex; gap: 8px; align-items: center; }
+
+    .ctrl-btn {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .ctrl-btn:hover { background: rgba(255, 255, 255, 0.22); }
+    .ctrl-btn.primary { background: #2563eb; border-color: #2563eb; }
+
+    .slide {
+      width: min(1180px, 100%);
+      aspect-ratio: 16 / 9;
+      background: var(--bg-mesh);
+      border-radius: 22px;
+      padding: 28px 40px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .slide.active { display: flex; }
+
+    .slide-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .brand-tag { font-weight: 800; font-size: 15px; letter-spacing: -0.03em; }
+    .brand-tag span { color: #2563eb; }
+
+    .slide-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary-text);
+      background: var(--primary-soft);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    h2.slide-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin: 0 0 4px;
+    }
+
+    .slide-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 14px; }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .split-45-55 { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 18px; align-items: stretch; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 15px 18px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .shot-frame {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shot-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      cursor: zoom-in;
+      transition: transform 0.15s ease;
+    }
+
+    .shot-frame img:hover {
+      transform: scale(1.015);
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      z-index: 999;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 95vw;
+      max-height: 92vh;
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      background: #fff;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .shot-caption {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    ul.punch-list {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 12.8px;
+      line-height: 1.5;
+      color: #334155;
+    }
+    ul.punch-list li { margin-bottom: 6px; }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .b-rose { background: var(--rose-soft); color: var(--rose); }
+    .b-amber { background: var(--amber-soft); color: var(--amber); }
+    .b-emerald { background: var(--emerald-soft); color: var(--emerald); }
+    .b-blue { background: var(--primary-soft); color: var(--primary-text); }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: #64748b;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(203, 213, 225, 0.55);
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; display: block; }
+      .deck-controls { display: none; }
+      .slide {
+        display: flex !important;
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-controls">
+    <div><strong>SparkX UX Audit Deck (12 Pages)</strong> · Use <kbd>←</kbd> <kbd>→</kbd> keys</div>
+    <div class="ctrl-btns">
+      <button type="button" class="ctrl-btn" id="prevBtn">← Prev</button>
+      <span id="slideCounter">1 / 12</span>
+      <button type="button" class="ctrl-btn" id="nextBtn">Next →</button>
+      <button type="button" class="ctrl-btn primary" onclick="window.print()">Export / Save as PDF</button>
+    </div>
+  </div>
+
+  <!-- PAGE 1: MODULE OVERLOAD & CONSOLIDATION -->
+  <section class="slide active">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span> · New-User UX Audit</div>
+      <span class="slide-kicker">Page 1 · Configuration &amp; Master Data</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Too Many Modules (41 Cards) &amp; Split Contexts</h2>
+      <p class="slide-sub">First-time exploration shows admins must jump back and forth across separated modules.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Proposed Solutions</h3>
+            <ul class="punch-list">
+              <li><strong>1. Recategorize (4 Groups):</strong> Group Config &amp; Master Data into clear domain buckets <em>(aligned with Mas Ashar)</em>.</li>
+              <li><strong>2. Regroup / Merge by Correlation:</strong> Combine related modules so users don't bounce between pages (e.g. <code>Leave + Holidays</code>, <code>Time + Overtime + Work Week</code>, or <code>Employee Data</code> / <code>Company Data</code> in Master Data) + add direct cross-links (e.g. missing <code>PS Level</code>).</li>
+              <li><strong>3. Minor Feature — Sidebar Dropdown:</strong> Nested dropdown in sidebar for faster 1-click access.</li>
+            </ul>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="badge b-blue">Recategorize</span>
+            <span class="badge b-emerald">Merge Correlated</span>
+            <span class="badge b-amber">Sidebar Dropdown</span>
+          </div>
+        </div>
+        <div class="grid-2" style="gap:10px; height:100%;">
+          <div class="card" style="padding:10px;">
+            <div class="shot-frame" style="height:320px;">
+              <img src="deck-assets/categorized-config.png" alt="Categorized Configuration" />
+            </div>
+            <div class="shot-caption">Categorized Configuration</div>
+          </div>
+          <div class="card" style="padding:10px;">
+            <div class="shot-frame" style="height:320px;">
+              <img src="deck-assets/categorized-master.png" alt="Categorized Master Data" />
+            </div>
+            <div class="shot-caption">Categorized Master Data</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>SparkX UX Audit · IT Team Review</span>
+      <span>Page 1 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 2: GOLDEN RULE PEMISAHAN MENU -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Information Architecture Principle</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Prinsip Keputusan: The Golden Rule Pemisahan Menu</h2>
+      <p class="slide-sub">Model mental yang jelas sehingga HR Admin &amp; Super Admin selalu tahu di mana mencari atau mengubah suatu data.</p>
+      <div class="grid-3" style="height:375px;">
+        <div class="card">
+          <div>
+            <h3><span class="badge b-blue">Master Data</span></h3>
+            <div style="font-size:16px; font-weight:800; margin-bottom:2px;">"Kata Benda" (The Nouns)</div>
+            <div style="font-size:11.5px; color:#2563eb; font-style:italic; margin-bottom:10px;">Menjawab: Siapa, Apa, Di Mana &amp; Klasifikasi</div>
+            <ul class="punch-list" style="font-size:12px;">
+              <li>Data fondasi &amp; kamus referensi yang dipakai ulang lintas modul.</li>
+              <li>Companies, Org Hierarchy, Business Structure, Reporting Lines.</li>
+              <li>Cost Centers, GL Accounts &amp; WBS Projects.</li>
+              <li>Working Sites &amp; Meeting Rooms (aset lokasi fisik).</li>
+              <li>Positions, Layers/PS Levels &amp; Job Classifications.</li>
+              <li>Currencies, Banks, Geo Data, Profile &amp; Document Lookups.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <div>
+            <h3><span class="badge b-blue">Configuration</span></h3>
+            <div style="font-size:16px; font-weight:800; margin-bottom:2px;">"Kata Kerja &amp; Aturan" (The Verbs)</div>
+            <div style="font-size:11.5px; color:#2563eb; font-style:italic; margin-bottom:10px;">Menjawab: Bagaimana sistem menghitung &amp; menyetujui</div>
+            <ul class="punch-list" style="font-size:12px;">
+              <li>Aturan perilaku, plafon, alur persetujuan &amp; tata kelola.</li>
+              <li>Workflow &amp; Approval Matrix lintas modul.</li>
+              <li>Notifications, AI &amp; Automation, Roles &amp; Ownership (RBAC).</li>
+              <li>Leave &amp; Holiday Policies, Time &amp; Attendance, Overtime Rules.</li>
+              <li>Claim &amp; Expenses Caps, Medical TCare Matrix, Travel Per Diem.</li>
+              <li>Profile Verification, Onboarding/Offboarding &amp; Document Rules.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="border-color:#a7f3d0;">
+          <div>
+            <h3><span class="badge b-emerald">HR Operations</span></h3>
+            <div style="font-size:16px; font-weight:800; margin-bottom:2px;">"Operasional Harian" (Live Records)</div>
+            <div style="font-size:11.5px; color:#059669; font-style:italic; margin-bottom:10px;">Menjawab: Transaksi &amp; direktori karyawan aktif</div>
+            <ul class="punch-list" style="font-size:12px;">
+              <li>Data operasional yang berubah setiap hari oleh aktivitas HR.</li>
+              <li>Employee Directory (dipindahkan dari Master Data).</li>
+              <li>Organization Chart (tersinkron dengan Reporting Lines).</li>
+              <li>Profile Requests &amp; Pending Approvals.</li>
+              <li>Onboarding &amp; Offboarding Active Checklists.</li>
+              <li>Tetap terhubung 1 klik dari Setup Health di Admin Hub.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Information Architecture — Golden Rule</span>
+      <span>Page 2 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 3: BENCHMARK 6 PLATFORM HRIS -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Competitive Benchmark</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Benchmark 6 Platform HRIS Global &amp; Regional</h2>
+      <p class="slide-sub">Sintesis pola Information Architecture dan Admin UX terbaik dari Workday, Zoho People, BambooHR, Rippling, Deel, dan Mekari Talenta.</p>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:1.45;">
+          <thead>
+            <tr style="background:#0f172a; color:#fff; text-align:left;">
+              <th style="padding:11px 14px; width:16%;">Platform</th>
+              <th style="padding:11px 14px; width:27%;">Pola Master Data (Objek)</th>
+              <th style="padding:11px 14px; width:27%;">Pola Configuration (Aturan)</th>
+              <th style="padding:11px 14px; width:30%; background:#2563eb;">Diadopsi ke Revamp SparkX</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:11px 14px; font-weight:700;">Workday HCM</td>
+              <td style="padding:11px 14px; color:#334155;">Foundation Objects: Supervisory Orgs, Cost Centers, Job Architecture, Locations.</td>
+              <td style="padding:11px 14px; color:#334155;">Business Process Framework, Eligibility Rules, Security Groups.</td>
+              <td style="padding:11px 14px; color:#1d4ed8; font-weight:600;">Admin Overview Command Center (Setup Health di beranda), Ctrl+K Search, Pilar Job Architecture.</td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:11px 14px; font-weight:700;">Zoho People</td>
+              <td style="padding:11px 14px; color:#334155;">Organization Setup: Multi-Entity Structure, Departments, Designations, Locations.</td>
+              <td style="padding:11px 14px; color:#334155;">Services (Leave/Attendance), Workflows, Mail Alerts, User Access Control.</td>
+              <td style="padding:11px 14px; color:#1d4ed8; font-weight:600;">Pengelompokan 4 Pilar Domain, Persistent Global Entity Scope Switcher (Inheritance Badges), RBAC Matrix.</td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:11px 14px; font-weight:700;">BambooHR</td>
+              <td style="padding:11px 14px; color:#334155;">Data Fields &amp; List Values terpusat; Employee Directory terpisah di menu People.</td>
+              <td style="padding:11px 14px; color:#334155;">Time-Off Policies, Approval Chains, Custom Access Levels.</td>
+              <td style="padding:11px 14px; color:#1d4ed8; font-weight:600;">Konsolidasi 16 card lookup → 2 Split-Pane Workbench; Employee Directory pindah ke HR Operations.</td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:11px 14px; font-weight:700;">Rippling</td>
+              <td style="padding:11px 14px; color:#334155;">Unified Employee Graph menghubungkan org, lokasi, keuangan, &amp; aset.</td>
+              <td style="padding:11px 14px; color:#334155;">Workflow Studio &amp; Conditional Policy Engine lintas modul.</td>
+              <td style="padding:11px 14px; color:#1d4ed8; font-weight:600;">Contextual Cross-Links langsung dari Leave/Claims/Offboarding ke Workflow Matrix terkait.</td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:11px 14px; font-weight:700;">Deel &amp; Mekari Talenta</td>
+              <td style="padding:11px 14px; color:#334155;">Legal Entities, Active Currencies, Bank Directories, PTKP Statuses.</td>
+              <td style="padding:11px 14px; color:#334155;">Statutory Payroll Sync (BPJS, 1721-A1), Geofence, Benefit &amp; Claim Matrices.</td>
+              <td style="padding:11px 14px; color:#1d4ed8; font-weight:600;">Active-Only FX Currencies, Unified Medical TCare Matrix, kejelasan tag statutori ID/SG.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Competitive Benchmark — 6 HRIS Platforms</span>
+      <span>Page 3 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 2: OVERALL UI IMPROVEMENTS -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 4 · Overall UI &amp; Navigation</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Company Scope, Persistence &amp; Full-Height Sections</h2>
+      <p class="slide-sub">Maximize workspace width, keep selected company context, and remove cramped inner scrollboxes.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>3 Overall Improvements</h3>
+            <ul class="punch-list">
+              <li><strong>Company Scope as Dropdown:</strong> Left-side Company list wastes space &amp; truncates panels. Move to <strong>header dropdown</strong> (or select once upfront).</li>
+              <li><strong>Persist Selected Company:</strong> Moving between modules must <strong>stay on Company A</strong>—never reset unless user changes it.</li>
+              <li><strong>Remove Section Height Limit:</strong> Expand forms naturally down the page instead of clipping inside a small scrollbox.</li>
+            </ul>
+          </div>
+          <span class="badge b-blue" style="align-self:flex-start;">+ Universal Search (Ctrl+K) to exact setting</span>
+        </div>
+        <div class="grid-2" style="gap:10px; height:100%;">
+          <div class="card" style="padding:10px;">
+            <h3>Solution 1 <span class="badge b-blue">Per-Page Dropdown</span></h3>
+            <div class="shot-frame" style="height:285px;">
+              <img src="deck-assets/sol-1-per-page.jpg" alt="Solution 1 Per-Page Dropdown" />
+            </div>
+            <div class="shot-caption">Switch company directly inside each module header.</div>
+          </div>
+          <div class="card" style="padding:10px;">
+            <h3>Solution 2 <span class="badge b-emerald">Global Top-Bar</span></h3>
+            <div class="shot-frame" style="height:285px;">
+              <img src="deck-assets/sol-2-global-scope.png" alt="Solution 2 Global Scope" />
+            </div>
+            <div class="shot-caption">Pick company once in top bar; all pages stay synced.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Overall UI &amp; Scope Persistence</span>
+      <span>Page 4 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 3: SETUP HEALTH -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 5 · Config: Setup Health</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Setup Health: Readiness Bar + Issue Highlight</h2>
+      <p class="slide-sub">Redirecting to a complex page without highlighting the error forces users to hunt manually.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Proposed Solutions</h3>
+            <ul class="punch-list">
+              <li><strong>Company Readiness Progress Bar:</strong> Show <code>% Ready</code> per company above the issue list so admins see setup progress at a glance.</li>
+              <li><strong>Auto-Redirect &amp; Highlight Issue:</strong> Clicking <em>Fix</em> should jump straight to the exact section/tab and <strong>visually highlight</strong> the missing field.</li>
+            </ul>
+          </div>
+          <span class="badge b-emerald" style="align-self:flex-start;">Click either image to zoom</span>
+        </div>
+        <div class="grid-2" style="gap:10px; height:100%;">
+          <div class="card" style="padding:10px;">
+            <h3>1. Readiness Bar <span class="badge b-blue">Progress</span></h3>
+            <div class="shot-frame" style="height:285px;">
+              <img src="deck-assets/redesign-setup-health.png" alt="Setup Health Redesign" />
+            </div>
+            <div class="shot-caption">Per-company % ready + issue list.</div>
+          </div>
+          <div class="card" style="padding:10px;">
+            <h3>2. Auto-Highlight <span class="badge b-emerald">Redirect</span></h3>
+            <div class="shot-frame" style="height:285px;">
+              <img src="deck-assets/highlight-issue.png" alt="Highlighted issue row" />
+            </div>
+            <div class="shot-caption">Jumps directly &amp; highlights missing field.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Setup Health</span>
+      <span>Page 5 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 4: NOTIFICATION -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 6 · Config: Notification</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Notification: Cramped 3-Col → Horizontal Tabs + 2-Split</h2>
+      <p class="slide-sub">Separate Global Channels (full-page) from Company Settings &amp; Event-Driven Rules.</p>
+      <div class="grid-2" style="height:385px;">
+        <div class="card">
+          <h3>Before <span class="badge b-rose">Small Space &amp; Scroll</span></h3>
+          <div class="shot-frame" style="height:290px;">
+            <img src="deck-assets/current-notif.png" alt="Current Notification" />
+          </div>
+          <div class="shot-caption">3 narrow columns; Rules list cut off at the bottom.</div>
+        </div>
+        <div class="card">
+          <h3>After <span class="badge b-emerald">Horizontal Tabs + 2-Split</span></h3>
+          <div class="shot-frame" style="height:290px;">
+            <img src="deck-assets/redesign-notif.png" alt="Redesigned Notification" />
+          </div>
+          <div class="shot-caption">Clear <code>COMPANY</code> vs <code>RULES</code> tabs + spacious Rule Editor.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Notification</span>
+      <span>Page 6 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 7: CLAIM & EXPENSES -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 7 · Config: Claim &amp; Expenses</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Claim &amp; Expenses: Horizontal Tabs &amp; Section Contrast</h2>
+      <p class="slide-sub">Eliminate long vertical dropdowns, skipped Save buttons, and blending section colors.</p>
+      <div class="grid-3" style="height:385px;">
+        <div class="card" style="padding:12px;">
+          <div>
+            <h3>1. Before <span class="badge b-rose">Long Accordions</span></h3>
+            <p class="slide-sub" style="margin:0 0 8px; font-size:12px;">Long vertical list makes users scroll &amp; skip Save buttons.</p>
+          </div>
+          <div class="shot-frame" style="height:265px;">
+            <img src="deck-assets/claim-before-accordions.jpg" alt="Claim Before Accordions" />
+          </div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <div>
+            <h3>1. After <span class="badge b-emerald">Horizontal Tabs</span></h3>
+            <p class="slide-sub" style="margin:0 0 8px; font-size:12px;">1 category per tab—compact, clear, &amp; easy to save.</p>
+          </div>
+          <div class="shot-frame" style="height:265px;">
+            <img src="deck-assets/redesign-claim.png" alt="Claim Horizontal Categories" />
+          </div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <div>
+            <h3>2. Section Contrast <span class="badge b-amber">Fix UI</span></h3>
+            <p class="slide-sub" style="margin:0 0 8px; font-size:12px;">Current field cards blend together; add stronger contrast between sections.</p>
+          </div>
+          <div class="shot-frame" style="height:265px;">
+            <img src="deck-assets/claim-contrast-issue.jpg" alt="Claim Section Contrast Issue" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Claim &amp; Expenses</span>
+      <span>Page 7 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 6: TIME & ATTENDANCE -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 8 · Config: Time &amp; Attendance</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Time &amp; Attendance Gaps (Benchmarked)</h2>
+      <p class="slide-sub">Missing policy controls &amp; unclear section naming compared to standard HRIS.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Key Findings &amp; Fixes</h3>
+            <ul class="punch-list">
+              <li><strong>Rename &amp; Org Default:</strong> Rename <code>Attendance Sites</code> → <code>Attendance Configuration</code>; clarify/add <code>Organization defaults</code>.</li>
+              <li><strong>Share Work Sites:</strong> Add <strong>Copy/Save Location</strong> across companies in the same building.</li>
+              <li><strong>Late Grace Period:</strong> Add tolerance minutes for late clock-in.</li>
+              <li><strong>Multiple Shifts:</strong> Support morning / night / rotational shift templates.</li>
+              <li><strong>WFH Limit &amp; Back-Dated Window:</strong> Add WFH day quota + max back-dated days (e.g. 7 days) for <code>Manual Time Entry</code>.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <h3>Current Time &amp; Attendance <span class="badge b-amber">6 Gaps</span></h3>
+          <div class="shot-frame" style="height:315px;">
+            <img src="deck-assets/current-attendance.png" alt="Current Time & Attendance" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Time &amp; Attendance</span>
+      <span>Page 8 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 7: OVERTIME -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 9 · Config: Overtime</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Overtime Gaps &amp; Holiday/Rate Integration</h2>
+      <p class="slide-sub">Need minimum OT duration, revert option, and clear link to Work Week &amp; Holidays.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Key Findings &amp; Fixes</h3>
+            <ul class="punch-list">
+              <li><strong>Revert to Standard Types:</strong> Add option to reset back after clicking <code>Edit the standard types</code>.</li>
+              <li><strong>Minimum OT Duration:</strong> Prevent &lt;30 min stays from being claimed as paid OT.</li>
+              <li><strong>Holiday / Weekend OT:</strong> Integrate with <code>Work Week</code> &amp; <code>Holidays</code> to detect public holiday OT &amp; apply separate rules/rates.</li>
+              <li><strong>"Overtime rates" Link:</strong> Guide says <em>"not configured here"</em>—link directly to where it lives (or unify).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <h3>Current Overtime <span class="badge b-amber">4 Gaps</span></h3>
+          <div class="shot-frame" style="height:315px;">
+            <img src="deck-assets/current-overtime.png" alt="Current Overtime" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Overtime</span>
+      <span>Page 9 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 9: LEAVE -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 10 · Config: Leave</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Leave: Typo, Bulk Deduction &amp; Encashment</h2>
+      <p class="slide-sub">Align operational actions with Employee Balances &amp; add Leave Encashment roadmap.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Key Findings &amp; Fixes</h3>
+            <ul class="punch-list">
+              <li><strong>Minor Typo:</strong> Fix <code>Outaptient Sick Leave</code> → <strong>Outpatient Sick Leave</strong>.</li>
+              <li><strong>Relocate Bulk Deduction:</strong> Move <strong>Bulk Leave Deduction</strong> out of <code>Holidays</code> tab into <strong>Employee Balances</strong> (same balance context).</li>
+              <li><strong>Leave Encashment (Darwinbox):</strong> Choose <em>Accrued / Carry forward / Both</em>, min days per request, min retained balance, &amp; max encash per cycle.</li>
+            </ul>
+          </div>
+          <span class="badge b-amber" style="align-self:flex-start;">Context Alignment + Encashment Roadmap</span>
+        </div>
+        <div class="card" style="padding:12px;">
+          <h3>Current Leave Config <span class="badge b-blue">3 Fixes</span></h3>
+          <div class="shot-frame" style="height:315px;">
+            <img src="deck-assets/current-leave.png" alt="Current Leave Config" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Leave</span>
+      <span>Page 10 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 10: MEDICAL -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 11 · Config: Medical</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Medical: Save Ambiguity, PS Level &amp; AI Link</h2>
+      <p class="slide-sub">Eliminate duplicate Save buttons and connect missing dependencies.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Key Findings &amp; Fixes</h3>
+            <ul class="punch-list">
+              <li><strong>2 Confusing Save Buttons:</strong> Clarify or merge <code>Save Outpatient limits</code> and bottom <code>Save Changes</code> into 1 consistent Save action.</li>
+              <li><strong>Missing PS Level Link:</strong> When a company has no PS Levels, add a direct link to <strong>Master Data → Layer &amp; Level</strong>.</li>
+              <li><strong>AI Medical Analyze Link:</strong> Show whether <code>AI Medical Document Analyzing</code> is On/Off with a direct link to AI Settings.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="grid-2" style="gap:10px; height:100%;">
+          <div class="card" style="padding:10px;">
+            <h3>2 Save Buttons <span class="badge b-rose">Confusing</span></h3>
+            <div class="shot-frame" style="height:295px;">
+              <img src="deck-assets/current-medical.png" alt="Medical 2 Save Buttons" />
+            </div>
+          </div>
+          <div class="card" style="padding:10px;">
+            <h3>No PS Level <span class="badge b-amber">Needs Link</span></h3>
+            <div class="shot-frame" style="height:295px;">
+              <img src="deck-assets/current-medical-ps.png" alt="Medical No PS Level" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Medical</span>
+      <span>Page 11 of 12</span>
+    </div>
+  </section>
+
+  <!-- PAGE 10: TRAVEL -->
+  <section class="slide">
+    <div class="slide-top">
+      <div class="brand-tag">spark<span>X</span></div>
+      <span class="slide-kicker">Page 12 · Config: Travel</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title">Travel: PS Level Link &amp; Declaration Deadline</h2>
+      <p class="slide-sub">Connect domestic rates to Layer &amp; Level and add missing Travel Declaration rules.</p>
+      <div class="split-45-55" style="height:385px;">
+        <div class="card">
+          <div>
+            <h3>Key Findings &amp; Fixes</h3>
+            <ul class="punch-list">
+              <li><strong>Missing PS Level Link:</strong> In <code>Rates &amp; Allowances</code>, add a direct hyperlink to <strong>Master Data → Layer &amp; Level</strong> when PS Levels are not yet set.</li>
+              <li><strong>Travel Declaration Config:</strong> Add setting for <strong>Declaration submission deadline</strong> (how many days after trip employees must submit proof/receipts).</li>
+            </ul>
+          </div>
+          <span class="badge b-emerald" style="align-self:flex-start;">Thank You · Q&amp;A with IT Team</span>
+        </div>
+        <div class="card" style="padding:12px;">
+          <h3>Current Travel Config <span class="badge b-amber">2 Fixes</span></h3>
+          <div class="shot-frame" style="height:315px;">
+            <img src="deck-assets/current-travel.png" alt="Current Travel Config" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Config — Travel</span>
+      <span>Page 12 of 12</span>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox">
+    <button type="button" class="lightbox-close" id="lightboxClose">Close (Esc)</button>
+    <img id="lightboxImg" src="" alt="Full Preview" />
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.getElementById("slideCounter");
+    let current = 0;
+
+    function showSlide(idx) {
+      current = (idx + slides.length) % slides.length;
+      slides.forEach((s, i) => s.classList.toggle("active", i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => showSlide(current - 1));
+    document.getElementById("nextBtn").addEventListener("click", () => showSlide(current + 1));
+
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    document.querySelectorAll(".shot-frame img").forEach((img) => {
+      img.title = "Click to view full size";
+      img.addEventListener("click", () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.add("open");
+      });
+    });
+    lightbox.addEventListener("click", () => lightbox.classList.remove("open"));
+    document.getElementById("lightboxClose").addEventListener("click", () => lightbox.classList.remove("open"));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") lightbox.classList.remove("open");
+      else if (e.key === "ArrowRight" || e.key === " ") showSlide(current + 1);
+      else if (e.key === "ArrowLeft") showSlide(current - 1);
+    });
+  </script>
+</body>
+</html>
